@@ -41,7 +41,11 @@ const Post = async ({ params }: Props) => {
     <main className="px-10 leading-7">
       <div className="md:flex gap-10 mb-5">
         <div className="basis-full">
-          <Content post={post} />
+          <Content 
+            post={post}
+            actionUrl={`${process.env.NEXT_PUBLIC_URL}/api/post/${post?.id}`}
+            actionMethod='PATCH'
+          />
         </div>
       </div>
     </main>

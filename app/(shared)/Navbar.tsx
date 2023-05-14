@@ -11,7 +11,7 @@ const Navbar = (props: Props) => {
 				<div className='flex justify-between items-center gap-10'>
 					<Link href='/'>Home</Link>
 					<Link href='/'>About</Link>
-					<Link href='/'>Blog</Link>
+					<Link href='/list'>Blog</Link>
 					<Link href='/'>Contact</Link>
 				</div>
 				<div>

@@ -8,27 +8,41 @@ import CategoryAndEdit from "./CategoryAndEdit"
 import Article from "./Article"
 
 type Props = {
-  post: FormattedPost
+  post?: FormattedPost
+  actionUrl: string
+  actionMethod: string
 }
 
-const Content = ({ post }: Props) => {
-  const [isEditable, setIsEditable] = useState<boolean>(false)
+const Content = ({ post, actionUrl, actionMethod }: Props) => {
+  const [isEditable, setIsEditable] = useState<boolean>(post ? false : true)
 
-  const [title, setTitle] = useState<string>(post.title)
+  const [category, setCategory] = useState<string>(post?.category || '')
+  const [categoryError, setCategoryError] = useState<string>("")
+  const [tempCategory, setTempCategory] = useState<string>(category)
+
+  const [title, setTitle] = useState<string>(post?.title || '')
   const [titleError, setTitleError] = useState<string>("")
   const [tempTitle, setTempTitle] = useState<string>(title)
 
-  const [content, setContent] = useState<string>(post.content)
+  const [content, setContent] = useState<string>(post?.content || '')
   const [contentError, setContentError] = useState<string>("")
   const [tempContent, setTempContent] = useState<string>(content)
 
-  const date = new Date(post?.createdAt)
+  const [author, setAuthor] = useState<string>('')
+  const [image, setImage] = useState<string>('')
+
+  const date = new Date(post?.createdAt || '')
   const options = { year: "numeric", month: "long", day: "numeric" } as any
   const formattedDate = date.toLocaleDateString("en-US", options)
 
   const handleIsEditable = (bool: boolean) => {
     setIsEditable(bool)
     editor?.setEditable(bool)
+  }
+
+  const handleOnChangeCategory = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (category) setCategoryError("")
+    setCategory(e.target.value)
   }
 
   const handleOnChangeTitle = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -58,43 +72,59 @@ const Content = ({ post }: Props) => {
     e.preventDefault()
 
     // validation checks
+    if (category === "" ) setCategoryError("This field is required.")
     if (title === "") setTitleError("This field is required.")
     if (editor?.isEmpty) setContentError("This field is required.")
-    if (title === "" || editor?.isEmpty) return
+    if (category === "" || title === "" || editor?.isEmpty) return
 
     const response = await fetch(
-      `${process.env.NEXT_PUBLIC_URL}/api/post/${post?.id}`,
+      actionUrl,
       {
-        method: "PATCH",
+        method: actionMethod,
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          category: category,
           title: title,
           content: content,
+          author: author,
+          image: image
         }),
       }
     )
     const data = await response.json()
 
     handleIsEditable(false)
+    setTempCategory("")
     setTempTitle("")
     setTempContent("")
+    setAuthor("")
+    setImage("")
 
+    setCategory(data.category)
     setTitle(data.title)
     setContent(data.content)
+    setAuthor(data.author)
+    setImage(data.image)
     editor?.commands.setContent(data.content)
   }
 
   return (
     <div className="prose w-full max-w-full mb-10">
       {/* BREADCRUMBS */}
-      <h5 className="text-wh-300">{`Home > ${post.category} > ${post.title}`}</h5>
+      {post ? <h5 className="text-wh-300">{`Home > ${post.category} > ${post.title}`}</h5> : ''}
 
       {/* CATEGORY AND EDIT */}
       <CategoryAndEdit
         isEditable={isEditable}
         handleIsEditable={handleIsEditable}
+        category={category}
+        setCategory={setCategory}
+        categoryError={categoryError}
+        tempCategory={tempCategory}
+        setTempCategory={setTempCategory}
+        handleOnChangeCategory={handleOnChangeCategory}
         title={title}
         setTitle={setTitle}
         tempTitle={tempTitle}
@@ -123,14 +153,14 @@ const Content = ({ post }: Props) => {
           ) : (
             <h3 className="font-bold text-3xl mt-3">{title}</h3>
           )}
-          <div className="flex gap-3">
-            <h5 className="font-semibold text-xs">By {post.author}</h5>
+          {post ? <div className="flex gap-3">
+            <h5 className="font-semibold text-xs">By {post?.author}</h5>
             <h6 className="text-wh-300 text-xs">{formattedDate}</h6>
-          </div>
+          </div> : ''}
         </>
 
         {/* IMAGE */}
-        <div className="relative w-auto mt-2 mb-16 h-96">
+        {post ? (<div className="relative w-auto mt-2 mb-16 h-96">
           <Image
             fill
             alt={post.title}
@@ -141,15 +171,34 @@ const Content = ({ post }: Props) => {
                   60vw"
             style={{ objectFit: "cover" }}
           />
-        </div>
+        </div>) : ''}
+
+        {/* CREATE FIELDS */}
+        {!post ? (
+          <div className="flex gap-3 my-3">
+            <input
+              type='text'
+              className="basis-1/3 border-2 rounded-md bg-wh-50 p-3 w-full"
+              placeholder="Author"
+              onChange={(e) => setAuthor(e.target.value)}
+              value={author}
+            />
+            <input
+              type='text'
+              className="basis-2/3 border-2 rounded-md bg-wh-50 p-3 w-full"
+              placeholder="URL Image"
+              onChange={(e) => setImage(e.target.value)}
+              value={image}
+            />
+          </div>
+        ) : ''}
 
         {/* ARTICLE */}
         <Article
           contentError={contentError}
           editor={editor}
           isEditable={isEditable}
-          setContent={setContent}
-          title={title}
+          content={content}
         />
 
         {/* SUBMIT BUTTON */}

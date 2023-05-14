@@ -21,7 +21,7 @@ export default async function Home() {
     posts.forEach((post: Post, i: number) => {
       if (i < 4) {
         heroPosts.push(post)
-      }else {
+      }else if (i > (posts.length - 5)) {
         otherPosts.push(post)
       }
     })
