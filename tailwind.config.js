@@ -8,7 +8,7 @@ module.exports = {
   theme: {
     extend: {
       backgroundImage: {
-        'gradient-gradual': 'linear-gradient(180deg, rgba(116, 116, 116, 0) 66.15% #000000 100%)',
+        'gradient-gradual': 'linear-gradient(180deg, rgba(116, 116, 116, 0) 66.15%, #000000 100%)',
       },
       colors: {
         'wh-10' : '#F4F4F4',
