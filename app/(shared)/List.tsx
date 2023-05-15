@@ -1,8 +1,9 @@
 "use client"
 import { Post } from "@prisma/client"
 import React, { useState } from "react"
-import { ChevronRightIcon, ChevronLeftIcon } from "@heroicons/react/24/solid"
+import { ChevronRightIcon, ChevronLeftIcon, PlusIcon } from "@heroicons/react/24/solid"
 import Card from "./Card"
+import Link from "next/link"
 
 type Props = {
   posts: Array<Post>
@@ -44,7 +45,16 @@ const List = ({ posts }: Props) => {
   return (
     <section className="pt-4 mb-8">
       {/* HEADER */}
-      <p className="font-bold text-2xl my-4">Posts List</p>
+      <div className="flex items-center justify-between">
+        <p className="font-bold text-2xl my-4">Posts List</p>
+        <Link
+          href="/post"
+          className="bg-accent-red hover:bg-wh-500 text-wh-10 font-semibold py-2 px-5 h-[2.8rem] flex w-[12rem] items-center justify-center gap-4"
+        >
+          <PlusIcon className="h-8 w-8 text-wh-10 hover:text-wh-300" />
+          ADD POST
+        </Link>
+      </div>
       <div className="sm:grid grid-cols-2 gap-16">
         {list.map((post) => {
           return <Card

@@ -76,7 +76,7 @@ const CategoryAndEdit = ({
           )}
         
       </h4>
-      <div className="mt-4">
+      {post ? (<div className="mt-4">
         {isEditable ? (
           <div className="flex justify-between gap-3">
             <button onClick={handleCancelEdit}>
@@ -88,7 +88,7 @@ const CategoryAndEdit = ({
             <PencilSquareIcon className="h-6 w-6 text-accent-red" />
           </button>
         )}
-      </div>
+      </div>) : ''}
     </div>
   )
 }

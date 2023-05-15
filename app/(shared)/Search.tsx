@@ -11,14 +11,6 @@ type Props = {
   }
 }
 
-const Item = ({ item }: Props) => {
-  return (
-    <div className='flex items-center cursor-pointer px-5 py-4'>
-      <p>{item.title}</p>
-    </div>
-  )
-}
-
 const styles = {
   input: 'w-full border border-wh-500 py-2 px-4 text-lg bg-wh-900 text-white placeholder:text-wh-500 outline-none rounded-none',
   listbox: 'bg-neutral-900 w-full text-slate-50 rounded-md',
@@ -76,12 +68,10 @@ const Search = () => {
           listbox={listbox}
           styles={styles}
           onSelect={handleQuery}
-          // Item={Item}
         />
       </div>
       <button
         type="button"
-        // onClick={handleQuery}
         className="bg-accent-red hover:bg-wh-500 text-wh-10 font-semibold py-2 px-5 h-[2.8rem]"
       >
         SEARCH
