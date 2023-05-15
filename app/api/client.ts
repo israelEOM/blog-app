@@ -12,3 +12,12 @@ if (process.env.NODE_ENV === "production") {
 }
 
 export const prisma = prismaInit
+
+export async function removeTags(str: string) {
+  if ((str === null) || (str === ''))
+    return ''
+  else
+    str = str.toString()
+
+  return str.replace(/(<([^>]+)>)/ig, '')
+}

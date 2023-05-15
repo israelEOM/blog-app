@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server"
-import { prisma } from "@/app/api/client"
+import { prisma, removeTags } from "@/app/api/client"
 
 type Params = { params: { id: string } }
 
@@ -7,9 +7,11 @@ export async function PATCH(request: Request, { params }: Params) {
   try {
     const { id } = params
     const { category, title, content } = await request.json()
+    const snippet = await removeTags(content)
+
     const post = await prisma.post.update({
       where: { id: id },
-      data: { category, title, content },
+      data: { category, title, content, snippet },
     })
     return NextResponse.json(post, { status: 200 })
   } catch (error) {
